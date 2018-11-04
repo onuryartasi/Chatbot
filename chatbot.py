@@ -34,7 +34,8 @@ for line in lines:
         
 conversations_ids = []
 for conversation in conversations[:-1]:
-    _conversation = conversation.split(' +++$+++ ')[-1][1:-1].replace("'","").replace(" ","")
+    _conversation = conversation.split(' +++$+++ ')[-1][1:-1].replace("'",
+                                      "").replace(" ","")
     conversations_ids.append(_conversation.split(','))
 
 # Getting seperately the questions and the answer    
@@ -78,6 +79,47 @@ for question in questions:
 clean_answers = []
 for answer in answers:
     clean_answers.append(clean_text(answer))
+    
+# Creating a dictionary  that maps each word to its number of occurenes
+
+word2count = {}
+
+for question in clean_questions:
+    for word in question.split():
+        if word not in word2count:
+            word2count[word] = 1
+        else:
+            word2count[word] += 1
+
+for answer in clean_answers:
+    for word in answer.split():
+        if word not in word2count:
+            word2count[word] = 1
+        else:
+            word2count[word] += 1
+            
+# Creat,g two dictionary unique intager
+    
+threshold = 20
+questionswords2int = {}
+word_number=0
+for word,count in word2count.items():
+    if count >= threshold:
+        questionswords2int[word] = word_number
+        word_number += 1
+answerswords2int = {}
+word_number = 0
+for word,count in word2count.items():
+    if count >= threshold:
+        answerswords2int[word] = word_number
+        word_number += 1
+        
+# Adding last tokens to these two dictionaries
+
+tokens = ['<PAD>','<EOS>','<OUT>','<SOS>']
+
+for token in tokens:
+    questionswords2int[token] = len(questionswords2int)+1
 
 
 
