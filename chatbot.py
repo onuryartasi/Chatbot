@@ -182,7 +182,7 @@ def preprocess_targets(targets, word2int, batch_size):
     left_side = tf.fill([batch_size,1],word2int['<SOS>'])
     right_side = tf.strided_slice(targets,[0,0],[batch_size,-1],[1,1])
     preprocessed_targets = tf.concat([left_side,right_side],1)
-    return preprocess_targets
+    return preprocessed_targets
 # Creating the Encoder RNN Layer
     
 def encoder_rnn(rnn_inputs, rnn_size, num_layers, keep_prob, sequence_length):
@@ -212,7 +212,7 @@ def decode_training_set(encoder_state, decoder_cell, decoder_embedded_input,
                                                                               attention_construct_function,
                                                                               name = "attn_dec_train")
     decoder_output, decoder_final_state, decoder_final_context_state = tf.contrib.seq2seq.dynamic_rnn_decoder(decoder_cell,
-                                                                                                              training_decoder_function,
+                                                                                                              training_doceder_function,
                                                                                                               decoder_embedded_input,
                                                                                                               sequence_length,
                                                                                                               scope = decoding_scope)  
@@ -243,7 +243,7 @@ def decode_test_set(encoder_state, decoder_cell,
                                                                               num_words,
                                                                               name = "attn_dec_test")
     test_predictions, decoder_final_state, decoder_final_context_state = tf.contrib.seq2seq.dynamic_rnn_decoder(decoder_cell,
-                                                                                                              test_decoder_function,
+                                                                                                              test_doceder_function,
                                                                                                               scope = decoding_scope)  
 
 
@@ -331,7 +331,56 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length,
                                                          batch_size)
     return training_predictions, test_predictions
      
+
+################### Part -3     Trainin to seq2seq Model #################33
+    # Setting hyperparamters
     
+epochs = 100
+batch_size = 64
+rnn_size = 512
+num_layers = 3
+encoding_embedding_size = 512
+decoding_embedding_size = 512
+learning_rate = 0.01
+learning_rate_decay = 0.9
+min_learning_rate = 0.0001
+keep_probability = 0.5
+
+# Defining a session
+
+tf.reset_default_graph()
+session = tf.InteractiveSession()
+
+#Loading to model inputs
+
+inputs, targets, lr, keep_prob = model_inputs()
+
+#Setings to sequence  length
+sequence_length = tf.placeholder_with_default(25, None, name = 'sequence_length')
+
+#Getting the shape of the inputs tensor
+
+input_shape = tf.shape(inputs)
+ 
+# Getting to training and test prediction
+
+training_predictions, test_predictions = seq2seq_model(tf.reverse(inputs,[-1]),
+                                                       targets,
+                                                       keep_probability,
+                                                       batch_size,
+                                                       sequence_length,
+                                                       len(answerswords2int),
+                                                       len(questionswords2int),
+                                                       encoding_embedding_size,
+                                                       decoding_embedding_size,
+                                                       rnn_size,
+                                                       num_layers,
+                                                       questionswords2int)
+
+#Setting up the Loss error, th optimeser and gradient Clipping
+
+
+
             
             
             
