@@ -203,7 +203,7 @@ def decode_training_set(encoder_state, decoder_cell, decoder_embedded_input,
                         sequence_length, decoding_scope,output_function,keep_prob,
                         batch_size):
 
-    attention_states = tf.zeroes([batch_size,1,decoder_cell.output_size])
+    attention_states = tf.zeros([batch_size,1,decoder_cell.output_size])
     attention_keys, attention_values, attention_score_function, attention_construct_function = tf.contrib.seq2seq.prepare_attention(attention_states,attention_option = "bahdanau", num_units = decoder_cell.output_size)         
     training_doceder_function = tf.contrib.seq2seq.attention_decoder_fn_train(encoder_state[0],
                                                                               attention_keys,
@@ -216,7 +216,7 @@ def decode_training_set(encoder_state, decoder_cell, decoder_embedded_input,
                                                                                                               decoder_embedded_input,
                                                                                                               sequence_length,
                                                                                                               scope = decoding_scope)  
-    decoder_output_dropout = tf.nn.dropou(decoder_output, keep_prob)
+    decoder_output_dropout = tf.nn.dropout(decoder_output, keep_prob)
 
     return output_function(decoder_output_dropout)     
             
@@ -228,7 +228,7 @@ def decode_test_set(encoder_state, decoder_cell,
                         decoding_scope,output_function,keep_prob,
                         batch_size):
 
-    attention_states = tf.zeroes([batch_size,1,decoder_cell.output_size])
+    attention_states = tf.zeros([batch_size,1,decoder_cell.output_size])
     attention_keys, attention_values, attention_score_function, attention_construct_function = tf.contrib.seq2seq.prepare_attention(attention_states,attention_option = "bahdanau", num_units = decoder_cell.output_size)         
     test_doceder_function = tf.contrib.seq2seq.attention_decoder_fn_inference(output_function,
                                                                               encoder_state[0],
@@ -276,6 +276,7 @@ def decoder_rnn(decoder_embedded_inputs,
                                                    decoder_cell,
                                                    decoder_embedded_inputs,
                                                    sequence_length,
+                                                   decoding_scope,
                                                    output_function,
                                                    keep_prob,
                                                    batch_size)
@@ -312,7 +313,6 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length,
     encoder_state = encoder_rnn(encoder_embedded_input,
                                 rnn_size,
                                 num_layers,
-                                keep_prob,
                                 keep_prob,
                                 sequence_length)
     preprocessed_targets = preprocess_targets(targets,questionswords2int,batch_size)
@@ -378,7 +378,6 @@ training_predictions, test_predictions = seq2seq_model(tf.reverse(inputs,[-1]),
                                                        questionswords2int)
 
 #Setting up the Loss error, th optimeser and gradient Clipping
-
 
 
             
