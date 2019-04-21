@@ -520,9 +520,9 @@ while(True):
             token = 'out'
         else:
             token = ' ' + answersints2word[i]
-            
+
         answer += token
         
-        if token == '.'
+        if token == '.':
             break
     print('Chatbot: '+ answer)
