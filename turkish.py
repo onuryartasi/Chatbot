@@ -268,7 +268,7 @@ session = tf.InteractiveSession()
 inputs, targets, lr, keep_prob = model_inputs()
  
 # Setting the sequence length
-sequence_length = tf.placeholder_with_default(25, None, name = 'sequence_length')
+sequence_length = tf.placeholder_with_default(10, None, name = 'sequence_length')
  
 # Getting the shape of the inputs tensor
 input_shape = tf.shape(inputs)
