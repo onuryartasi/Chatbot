@@ -357,7 +357,9 @@ def convert_string2int(question, word2int):
 # Setting up the chat
 while(True):
     question = input("You: ")
-    if question == 'Goodbye':
+    question = generate_text(question)
+    question = clean_text(question)
+    if question == 'goodbye':
         break
     question = convert_string2int(question, questionswords2int)
     question = question + [questionswords2int['<PAD>']] * (25 - len(question))
