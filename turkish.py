@@ -24,8 +24,6 @@ def generate_text(text):
         text = text.lower()
         text = text.strip()
         text = re.sub(word,converting_word[word],text)
-        print(text)
-
     return text
 
 new_question = []

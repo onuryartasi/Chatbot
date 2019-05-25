@@ -2,7 +2,7 @@
 
 import numpy as np
 import tensorflow as tf
-import re,time,os,csv,string
+import re,time,os,string
 import pandas as pd
 
 ######################### DATA PREPROCESSING #########################
@@ -10,9 +10,8 @@ import pandas as pd
 datasetDir = 'data'
 
 data = pd.read_csv(os.path.join(datasetDir,'data.csv'))
-questions = data.question
-answers = data.answer
 
+converting_word = {'ste':'sektor tumlesik egitim'}
 turkish_character = {'ö':'o',
                      'ş':'s',
                      'ğ':'g',
@@ -20,9 +19,28 @@ turkish_character = {'ö':'o',
                      'ı':'i',
                      'ü':'u'}
 
+def generate_text(text):
+    for word in converting_word:
+        text = text.lower()
+        text = text.strip()
+        text = re.sub(word,converting_word[word],text)
+    return text
+
+new_question = []
+new_answer =  []
+for i in range(data.shape[0]):
+    generate_question = generate_text(data["question"].iloc[i])
+    generate_answer = generate_text(data["answer"].iloc[i])
+    new_question.append(generate_question)
+    new_answer.append(generate_answer)
+
+df1 = pd.DataFrame({"question":new_question,"answer":new_answer})
+data = data.append(df1)
+
+questions = data.question
+answers = data.answer
+
 def clean_text(text):
-    text = text.lower()
-    text = text.strip()
     text = text.translate(str.maketrans('', '', string.punctuation))
     for character in turkish_character:
         text = re.sub(character,turkish_character[character],text)
@@ -249,8 +267,8 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length, answe
  
  
 # Setting the Hyperparameters
-epochs = 100
-batch_size = 32
+epochs = 300
+batch_size = 8
 rnn_size = 1024
 num_layers = 3
 encoding_embedding_size = 1024
@@ -268,7 +286,7 @@ session = tf.InteractiveSession()
 inputs, targets, lr, keep_prob = model_inputs()
  
 # Setting the sequence length
-sequence_length = tf.placeholder_with_default(25, None, name = 'sequence_length')
+sequence_length = tf.placeholder_with_default(10, None, name = 'sequence_length')
  
 # Getting the shape of the inputs tensor
 input_shape = tf.shape(inputs)
@@ -319,7 +337,6 @@ training_answers = sorted_clean_answers[training_validation_split:]
 validation_questions = sorted_clean_questions[:training_validation_split]
 validation_answers = sorted_clean_answers[:training_validation_split]
  
-
 
 ########## PART 4 - TESTING THE SEQ2SEQ MODEL ##########
  
