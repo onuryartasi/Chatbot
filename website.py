@@ -277,7 +277,7 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length, answe
  
  
 # Setting the Hyperparameters
-epochs = 1000
+epochs = 100
 batch_size = 8
 rnn_size = 1024
 num_layers = 3
@@ -369,7 +369,7 @@ def convert_string2int(question, word2int):
 def hello():
     content = request.get_json()
     if content.get("question"):
-            question = generate_text(question)
+            question = generate_text(content.get("question"))
             question = clean_text(question)
             question = convert_string2int(question, questionswords2int)
             question = question + [questionswords2int['<PAD>']] * (25 - len(question))

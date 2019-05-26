@@ -267,7 +267,7 @@ def seq2seq_model(inputs, targets, keep_prob, batch_size, sequence_length, answe
  
  
 # Setting the Hyperparameters
-epochs = 1000
+epochs = 100
 batch_size = 8
 rnn_size = 1024
 num_layers = 3
