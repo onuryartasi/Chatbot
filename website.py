@@ -390,7 +390,7 @@ def hello():
                 if token == '.':
                     break
             #########################
-            resp = jsonify(content)
+            resp = jsonify({"answer":answer})
             resp.status_code = 200
             return resp
     resp = jsonify({'status':404,'message':'question key not found'})
