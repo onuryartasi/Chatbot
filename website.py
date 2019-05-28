@@ -9,8 +9,10 @@ import numpy as np
 import tensorflow as tf
 import re,os,string
 import pandas as pd
+from flask_cors import CORS
 from flask import Flask, request, jsonify
 app = Flask(__name__)
+CORS(app)
 
 
 
